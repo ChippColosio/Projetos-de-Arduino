@@ -1,0 +1,53 @@
+#include <TimerOne.h>
+int a = 12, b = 13, c = 9, d = 8, e = 7, f = 11, g =10;
+
+
+int buzzer = 1;
+int tom = 2500;  
+void setup( ) {
+  pinMode(a, OUTPUT);
+  pinMode(b, OUTPUT);
+  pinMode(c, OUTPUT);
+  pinMode(d, OUTPUT);
+  pinMode(e, OUTPUT);
+  pinMode(f, OUTPUT);
+  pinMode(g, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+}
+int num [11][7]{
+  {b,c,e,f,g},//h
+  {a,d,e,f,g},//e
+  {d,e,f}, //L
+  {d,e,f}, //L
+  {a,b,c,d,e,f}, //O
+  {a,b,c,e,f,g}, //A
+  {a,e,f}, //T
+  {a,b,c,d,g}, //3
+  {a,b,g,e,d}, //2
+  {a,b,c,d,e,f,g}, //8
+  {a,b,e,f,g}, //P
+ 
+  };
+
+void buzz(){
+tone(buzzer,tom , 200);
+Timer1.detachInterrupt();
+}
+void loop() {
+ for (int i =0; i<11; i++){
+    clr();
+    contador(i);
+    delay(1000);
+  }
+ }
+ 
+void clr(){ //limpa o display
+  digitalWrite(a,HIGH);
+  digitalWrite(b,HIGH);
+  digitalWrite(c,HIGH);
+  digitalWrite(d,HIGH);
+  digitalWrite(e,HIGH);
+  digitalWrite(f,HIGH);
+  digitalWrite(g,HIGH);
+}
+void contador(int n){
