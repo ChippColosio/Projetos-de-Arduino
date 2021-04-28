@@ -51,3 +51,8 @@ void clr(){ //limpa o display
   digitalWrite(g,HIGH);
 }
 void contador(int n){
+for (int i =0; i< 7; i++) digitalWrite(num[n][i], LOW);
+tom = tom + 50;
+Timer1.initialize(400000);
+Timer1.attachInterrupt(buzz);
+}
