@@ -6,23 +6,23 @@
 #include <BlynkSimpleEsp8266.h>
 #include <HCSR04.h>
  
-#define pin1 D4
-#define pin2 D3
-#define pin3 D8
+#define pin1 D4 //Pino responsavel pelo acionamento da bomba
+#define pin2 D3 //Luz Verde
+#define pin3 D8 //Luz Vermelha
  
-Adafruit_MLX90614 mlx = Adafruit_MLX90614();
-const int trigPin = D5; 
-const int echoPin = D6; 
+Adafruit_MLX90614 mlx = Adafruit_MLX90614(); //Ativação do Infra
+const int trigPin = D5; //Trigger Ultra
+const int echoPin = D6; //Echo Ultra
 
-double temp_amb;
-double temp_obj;
-double calibration = 2.36;
+double temp_amb; //temperatura ambiente
+double temp_obj; //temperatura objeto
+double calibration = 2.36; // calibração do infra
 
-int resval = 0;
-int respin = A0; // sensor pin used
+int resval = 0; // inicialização
+int respin = A0; // leitura serial pra testes
 
-long duration;
-int distance;
+long duration; //duração pulso
+int distance; // medidor de distancia
  
 char auth[] = "WNJST-DTf9ntZEL_8P70Vobc1GEEjo6I";    // You should get Auth Token in the Blynk App.
 char ssid[] = "NewLife_PANDORA";                       // Your WiFi credentials.
@@ -41,20 +41,16 @@ void setup()
   pinMode (pin3, OUTPUT);
   
   mlx.begin();         //Initialize MLX90614
-  Blynk.begin(auth, ssid, pass);
+  Blynk.begin(auth, ssid, pass); //Inicialização blynk
   
-  Serial.println("Temperature Sensor MLX90614");
+  Serial.println("Temperature Sensor MLX90614"); // teste via serial do infra
 
- // delay(2500);
   
 }
  
 void loop(){
  
-  Blynk.run();
-  // Clears the trigPin
-  
-  //digitalWrite(pin1, HIGH);
+  Blynk.run(); //roda o blynk
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
 
@@ -76,9 +72,11 @@ void loop(){
   //delay(500);
   
 
-  temp_amb = mlx.readAmbientTempC();
-  temp_obj = mlx.readObjectTempC();
-  resval = analogRead(respin);
+  temp_amb = mlx.readAmbientTempC(); // le a temperatura ambiente em celsius
+  temp_obj = mlx.readObjectTempC(); // le a temperatura no sensor infra do objeto
+  resval = analogRead(respin);  //leitura do valor de reservatorio de alcool
+ 
+ 
   //Serial Monitor
   Serial.print("Room Temp = ");
   Serial.println(temp_amb);
@@ -86,12 +84,12 @@ void loop(){
   Serial.println(temp_obj);
   
   
-  Serial.println("---");
+  Serial.println("---"); //leitura do sensor do reservatorio de alcool e comparações para teste na serial
   if (resval<=100){ Serial.println("Water Level: Empty"); } else if (resval>100 && resval<=300){ Serial.println("Water Level: Low"); } else if (resval>300 && resval<=330){ Serial.println("Water Level: Medium"); } else if (resval>330){ 
     Serial.println("Water Level: High");
   
   }
-  if (temp_obj + calibration >= 36.600) {
+  if (temp_obj + calibration >= 36.600) { //logica de leitura do infra vermelho
   digitalWrite(pin3, HIGH);  
   digitalWrite(pin2, LOW);
   }else{
@@ -99,10 +97,10 @@ void loop(){
   digitalWrite(pin3,LOW);
   }
   
-  Blynk.virtualWrite(V1, temp_amb);
-  Blynk.virtualWrite(V2, (temp_obj + calibration));
+  Blynk.virtualWrite(V1, temp_amb); //blynk mostrando a temperatura ambiente
+  Blynk.virtualWrite(V2, (temp_obj + calibration)); //blynk mostrando a temperatura lida pelo objeto
   
-  if (distance <= 12) (digitalWrite( pin1, LOW));
+  if (distance <= 12) (digitalWrite( pin1, LOW)); //acionamento da bomba por um segundo enquanto tiver proximo do sensor
  
  
  delay(1000);
